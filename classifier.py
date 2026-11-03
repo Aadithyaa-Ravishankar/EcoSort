@@ -830,9 +830,8 @@ def classify_object(features: dict) -> dict:
 
 def _build_syllabus_tags(features: dict, category: str, reasons: list) -> list:
     """
-    Build the list of syllabus unit / algorithm tags that contributed to the
-    classification.  Tags are based on which features are present in the
-    features dict AND which reasons were actually generated.
+    Build the list of algorithm and feature descriptor tags that contributed to the
+    classification decision.
 
     Parameters
     ----------
@@ -846,7 +845,7 @@ def _build_syllabus_tags(features: dict, category: str, reasons: list) -> list:
     Returns
     -------
     list[str]
-        Deduplicated, sorted list of "Unit N: <Feature>" strings.
+        Deduplicated, sorted list of feature descriptor strings.
     """
     tags = set()
 
@@ -854,60 +853,60 @@ def _build_syllabus_tags(features: dict, category: str, reasons: list) -> list:
     def in_reasons(keyword: str) -> bool:
         return any(keyword.lower() in r.lower() for r in reasons)
 
-    # ── Unit 1 : Texture / GLCM ──────────────────────────────────────────────
+    # ── Texture / GLCM ────────────────────────────────────────────────────────
     if in_reasons("GLCM Homogeneity") or _safe_get(features, "glcm_homogeneity", None) is not None:
         if in_reasons("GLCM Homogeneity"):
-            tags.add("Unit 1: GLCM Homogeneity")
+            tags.add("GLCM Homogeneity")
     if in_reasons("GLCM Energy"):
-        tags.add("Unit 1: GLCM Energy")
+        tags.add("GLCM Energy")
     if in_reasons("GLCM Contrast"):
-        tags.add("Unit 1: GLCM Contrast")
+        tags.add("GLCM Contrast")
     if in_reasons("GLCM Dissimilarity"):
-        tags.add("Unit 1: GLCM Dissimilarity")
+        tags.add("GLCM Dissimilarity")
     if in_reasons("local texture entropy"):
-        tags.add("Unit 1: Local Texture Entropy")
+        tags.add("Local Texture Entropy")
 
-    # ── Unit 2 : Shape Descriptors & Boundary ────────────────────────────────
+    # ── Shape Descriptors & Boundary ──────────────────────────────────────────
     if in_reasons("circularity"):
-        tags.add("Unit 2: Circularity Descriptor")
+        tags.add("Circularity Descriptor")
     if in_reasons("Solidity"):
-        tags.add("Unit 2: Solidity Descriptor")
+        tags.add("Solidity Descriptor")
     if in_reasons("Aspect ratio") or in_reasons("aspect ratio"):
-        tags.add("Unit 2: Aspect Ratio Descriptor")
+        tags.add("Aspect Ratio Descriptor")
     if in_reasons("Extent"):
-        tags.add("Unit 2: Extent Descriptor")
+        tags.add("Extent Descriptor")
     if in_reasons("boundary entropy"):
-        tags.add("Unit 2: Chain Code Boundary Entropy")
+        tags.add("Chain Code Boundary Entropy")
     if _safe_get(features, "hu_moments", None) is not None:
-        tags.add("Unit 2: Hu Moments")
+        tags.add("Hu Moments")
     if _safe_get(features, "fourier_descriptors", None) is not None:
-        tags.add("Unit 2: Fourier Descriptors")
+        tags.add("Fourier Descriptors")
     if _safe_get(features, "centroidal_profile", None) is not None:
-        tags.add("Unit 2: Centroidal Profile")
+        tags.add("Centroidal Profile")
 
-    # ── Unit 3 : Hough Transforms & Corner Detection ─────────────────────────
+    # ── Hough Transforms & Corner Detection ───────────────────────────────────
     if in_reasons("Hough Circle"):
-        tags.add("Unit 3: Hough Circle Transform")
+        tags.add("Hough Circle Transform")
     if in_reasons("Hough lines") or in_reasons("Hough line"):
-        tags.add("Unit 3: Hough Line Transform")
+        tags.add("Hough Line Transform")
     if in_reasons("No straight Hough lines"):
-        tags.add("Unit 3: Hough Line Transform (absence)")
+        tags.add("Hough Line Transform (absence)")
     if in_reasons("No Hough circles"):
-        tags.add("Unit 3: Hough Circle Transform (absence)")
+        tags.add("Hough Circle Transform (absence)")
     if in_reasons("Sharp edges") or in_reasons("edge density"):
-        tags.add("Unit 3: Edge Detection (Canny)")
+        tags.add("Edge Detection (Canny)")
     if in_reasons("Shi-Tomasi corners"):
-        tags.add("Unit 3: Shi-Tomasi Corner Detection")
+        tags.add("Shi-Tomasi Corner Detection")
 
-    # ── Unit 4 : Specular / Colour Analysis ──────────────────────────────────
+    # ── Specular / Colour Analysis ────────────────────────────────────────────
     if in_reasons("Specular highlight") or in_reasons("Specular highlights") or in_reasons("specular ratio"):
-        tags.add("Unit 4: Specular Highlight Analysis")
+        tags.add("Specular Highlight Analysis")
     if in_reasons("HSV hue"):
-        tags.add("Unit 4: HSV Colour Space Analysis")
+        tags.add("HSV Colour Space Analysis")
 
-    # ── Unit 5 : Template Matching ───────────────────────────────────────────
+    # ── Template Matching ─────────────────────────────────────────────────────
     if in_reasons("Chamfer template"):
-        tags.add("Unit 5: Chamfer Distance Template Matching")
+        tags.add("Chamfer Distance Template Matching")
 
     return sorted(tags)
 

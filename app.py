@@ -36,27 +36,24 @@ st.set_page_config(
 # ─── Global CSS styling ───────────────────────────────────────────────────────
 st.markdown("""
 <style>
-    /* Main header */
+    /* Main header - Clean Light Theme */
     .eco-header {
-        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-        border-bottom: 3px solid #059669;
-        color: #ffffff;
-        padding: 1.8rem 2.2rem;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-left: 5px solid #059669;
+        color: #0f172a;
+        padding: 1.25rem 1.6rem;
         border-radius: 8px;
         margin-bottom: 1.2rem;
         text-align: center;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     }
     .eco-header h1 {
         margin: 0;
-        font-size: 2.1rem;
+        font-size: 1.95rem;
         font-weight: 700;
-        letter-spacing: -0.5px;
-    }
-    .eco-header p {
-        margin: 0.4rem 0 0;
-        opacity: 0.88;
-        font-size: 0.95rem;
+        color: #0f172a;
+        letter-spacing: -0.4px;
     }
 
     /* Bin badge */
@@ -130,7 +127,6 @@ st.markdown("""
 st.markdown("""
 <div class="eco-header">
     <h1>EcoSort: Visual Waste Classification Assistant</h1>
-    <p><em>Classical Computer Vision Architecture &nbsp;|&nbsp; Course: 21CSE454T — Computer Vision &nbsp;|&nbsp; Units 1–5</em></p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -227,7 +223,7 @@ with st.sidebar:
         defaults = PRESET_CONFIGS["Benchmark (Synthetic Samples)"]
 
     st.markdown("---")
-    st.markdown("**Unit 1 — Segmentation & Polarity**")
+    st.markdown("**Segmentation & Polarity**")
 
     thresh_method_opts = ["Otsu", "Adaptive", "Combined"]
     default_tm_idx = thresh_method_opts.index(defaults.get("thresh_method", "Otsu"))
@@ -255,7 +251,7 @@ with st.sidebar:
     adaptive_C     = st.slider("Adaptive Threshold C", 0, 20, int(defaults.get("adaptive_C", 2)),
                                help="Constant subtracted from mean in adaptive threshold.")
 
-    st.markdown("**Unit 1 — Edges & Morphology**")
+    st.markdown("**Edge Detection & Morphology**")
     canny_low  = st.slider("Canny Low Threshold",  10, 150, int(defaults.get("canny_low", 50)),
                            help="Lower hysteresis threshold for Canny edge detection.")
     canny_high = st.slider("Canny High Threshold", 50, 300, int(defaults.get("canny_high", 150)),
@@ -264,11 +260,11 @@ with st.sidebar:
     morph_kernel = st.slider("Morphology Kernel Size", 3, 21, int(defaults.get("morph_kernel", 5)), step=2,
                              help="Structuring element size for erosion/dilation/opening/closing.")
 
-    st.markdown("**Unit 2 — Object Filtering**")
+    st.markdown("**Object Area Filtering**")
     min_area = st.slider("Min Object Area (px)", 100, 5000, int(defaults.get("min_area", 500)), step=100,
                          help="Discard connected components smaller than this (noise filter).")
 
-    st.markdown("**Unit 3 — Hough Transforms**")
+    st.markdown("**Hough Geometric Transforms**")
     hough_threshold = st.slider("Hough Line Threshold", 10, 200, int(defaults.get("hough_threshold", 25)),
                                 help="Minimum votes for Hough line detection (25-35 recommended).")
     min_line_length = st.slider("Min Hough Line Length (px)", 10, 200, int(defaults.get("min_line_length", 30)),
@@ -289,8 +285,7 @@ with st.sidebar:
         """)
 
     st.markdown("---")
-    st.caption("*Course: 21CSE454T — Computer Vision*")
-    st.caption("*Classical Computer Vision Architecture (Units 1–5)*")
+    st.caption("*EcoSort Visual Classifier — Interactive Controls*")
 
 pol_code = "auto"
 if "Dark Background" in thresh_polarity:
@@ -404,7 +399,7 @@ def confidence_bar(score: float, color: str) -> str:
 
 def run_pipeline_cached(bgr_image: np.ndarray, params: dict):
     """Run the full CV pipeline and classification, store results in session state."""
-    with st.spinner("Executing Classical CV Pipeline (Units 1–5)..."):
+    with st.spinner("Executing Classical Computer Vision Pipeline..."):
         try:
             pipeline_results = run_full_pipeline(bgr_image, params)
             classifications  = classify_all_objects(pipeline_results)
@@ -537,9 +532,9 @@ with tab1:
                                 unsafe_allow_html=True
                             )
 
-                        # Syllabus feature mapping
+                        # Active feature descriptor mapping
                         if syl_feats:
-                            st.markdown("**Triggered Syllabus Features:**")
+                            st.markdown("**Active Feature Descriptors:**")
                             pills = " ".join(
                                 f'<span class="metric-pill"><em>{f}</em></span>'
                                 for f in syl_feats
@@ -572,8 +567,8 @@ with tab1:
 # TAB 2 — STEP-BY-STEP PIPELINE VISUALIZER
 # ═══════════════════════════════════════════════════════════════════════════════
 with tab2:
-    st.markdown("### Step-by-Step Syllabus Pipeline Visualizer")
-    st.caption("Each panel corresponds to a specific algorithm stage from the 21CSE454T syllabus.")
+    st.markdown("### Step-by-Step Pipeline Visualizer")
+    st.caption("Sequential visualization of intermediate classical computer vision stages.")
 
     if "pipeline_results" not in st.session_state or st.session_state["pipeline_results"] is None:
         st.info("Navigate to *EcoSort Classifier* (Tab 1), select an input image, and click *Execute EcoSort Classification Pipeline* first.")
@@ -589,7 +584,7 @@ with tab2:
                     st.caption(caption)
 
         # ── ROW 1: Original + Preprocessing ──────────────────────────────────
-        st.markdown("#### Unit 1: Image Processing Foundations")
+        st.markdown("#### Stage 1: Image Preprocessing & Filtering")
         r1c1, r1c2, r1c3 = st.columns(3)
         show_panel(r1c1, bgr_to_pil(orig),
                    "1. Original Image",
@@ -603,7 +598,7 @@ with tab2:
         if "gaussian_blur" in prep:
             show_panel(r1c3, gray_to_pil(prep["gaussian_blur"]),
                        "3. Gaussian & Median Filtering",
-                       f"Gaussian kernel={gaussian_kernel}×{gaussian_kernel}, σ auto. Noise reduction (Unit 1).")
+                       f"Gaussian kernel={gaussian_kernel}×{gaussian_kernel}, σ auto. Noise reduction.")
 
         # ── ROW 2: Thresholding + Morphology ─────────────────────────────────
         r2c1, r2c2, r2c3 = st.columns(3)
@@ -612,17 +607,17 @@ with tab2:
             otsu_val = thresh.get("otsu_thresh_val", 0)
             show_panel(r2c1, gray_to_pil(thresh["otsu"]),
                        "4. Otsu Binarization",
-                       f"Otsu threshold = {otsu_val}. Maximizes inter-class variance (Unit 1).")
+                       f"Otsu threshold = {otsu_val}. Maximizes inter-class variance.")
         if "adaptive" in thresh:
             show_panel(r2c2, gray_to_pil(thresh["adaptive"]),
                        "5. Adaptive Thresholding",
-                       f"Block={adaptive_block}, C={adaptive_C}. Local neighbourhood mean thresholding (Unit 1).")
+                       f"Block={adaptive_block}, C={adaptive_C}. Local neighbourhood mean thresholding.")
 
         morph = pr.get("morphology", {})
         if "closed" in morph:
             show_panel(r2c3, gray_to_pil(morph["closed"]),
                        "6. Morphological Opening & Closing",
-                       "Opening removes noise specks; Closing fills internal holes. Structuring element: Ellipse (Unit 1).")
+                       "Opening removes noise specks; Closing fills internal holes. Structuring element: Ellipse.")
 
         # ── ROW 3: Edges + Corners ────────────────────────────────────────────
         r3c1, r3c2, r3c3 = st.columns(3)
@@ -632,12 +627,12 @@ with tab2:
             cnt = ec.get("corner_count", 0)
             show_panel(r3c1, gray_to_pil(ec["canny"]),
                        "7. Canny Edge Detection",
-                       f"Low={canny_low}, High={canny_high}. Edge density={ed:.3f} (Unit 1).")
+                       f"Low={canny_low}, High={canny_high}. Edge density={ed:.3f}.")
 
         if "sobel_mag" in ec:
             show_panel(r3c2, gray_to_pil(ec["sobel_mag"]),
                        "8. Sobel Gradient Magnitude",
-                       "√(Gx²+Gy²). Measures local intensity gradient — Unit 1.")
+                       "√(Gx²+Gy²). Measures local intensity gradient.")
 
         # Draw Shi-Tomasi corners overlay
         if "shitomasi_corners" in ec and ec["shitomasi_corners"] is not None:
@@ -650,16 +645,16 @@ with tab2:
                 cv2.circle(corner_vis, (x_c, y_c), 4, (0, 255, 0), -1)
             show_panel(r3c3, bgr_to_pil(corner_vis),
                        "9. Shi-Tomasi Corner Detection",
-                       f"{ec.get('corner_count', 0)} corners detected (green markers). Irregular surfaces yield higher counts (Unit 1).")
+                       f"{ec.get('corner_count', 0)} corners detected (green markers). Irregular surfaces yield higher counts.")
 
         # ── ROW 4: Connected Components + Distance Transform ──────────────────
-        st.markdown("#### Unit 2: Shapes & Regions Analysis")
+        st.markdown("#### Stage 2: Shape & Regional Boundary Analysis")
         r4c1, r4c2, r4c3 = st.columns(3)
         comp = pr.get("components", {})
         if "colored_labels" in comp:
             show_panel(r4c1, bgr_to_pil(comp["colored_labels"]),
                        "10. Connected Component Labeling",
-                       f"{comp.get('num_components', 0)} components found. Distinct colors denote individual regions (Unit 2).")
+                       f"{comp.get('num_components', 0)} components found. Distinct colors denote individual regions.")
 
         dist_sk = pr.get("distance_skeleton", {})
         if "distance_transform" in dist_sk:
@@ -669,13 +664,13 @@ with tab2:
             dt_color = cv2.applyColorMap(dt_vis, cv2.COLORMAP_JET)
             show_panel(r4c2, bgr_to_pil(dt_color),
                        "11. Euclidean Distance Transform",
-                       "Distance of each foreground pixel to nearest background. Utilized in Chamfer matching (Unit 2).")
+                       "Distance of each foreground pixel to nearest background. Utilized in Chamfer matching.")
 
         if "skeleton" in dist_sk:
             skel_arr = (dist_sk["skeleton"].astype(np.uint8)) * 255
             show_panel(r4c3, gray_to_pil(skel_arr),
                        "12. Morphological Skeleton & Thinning",
-                       "Medial axis of the object. Reveals elongated topological structure (Unit 2).")
+                       "Medial axis of the object. Reveals elongated topological structure.")
 
         # ── ROW 5: Contour + Hough ────────────────────────────────────────────
         r5c1, r5c2, r5c3 = st.columns(3)
@@ -695,20 +690,20 @@ with tab2:
                             (int(cx)+8, int(cy)), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0,0,255), 1)
             show_panel(r5c1, bgr_to_pil(hull_vis),
                        "13. Boundary Tracking & Convex Hull",
-                       "Green = contour boundary, Blue = convex hull, Red marker = centroid (Unit 2).")
+                       "Green = contour boundary, Blue = convex hull, Red marker = centroid.")
 
         hough = pr.get("hough", {})
         if "line_overlay" in hough:
             show_panel(r5c2, bgr_to_pil(hough["line_overlay"]),
                        "14. Hough Line Transform (Probabilistic)",
-                       f"{hough.get('line_count', 0)} lines. Straight structural edges indicate paper or cardboard (Unit 3).")
+                       f"{hough.get('line_count', 0)} lines. Straight structural edges indicate paper or cardboard.")
         if "circle_overlay" in hough:
             show_panel(r5c3, bgr_to_pil(hough["circle_overlay"]),
                        "15. Circular Hough Transform",
-                       f"{hough.get('circle_count', 0)} circles. Circular geometries indicate cans or caps (Unit 3).")
+                       f"{hough.get('circle_count', 0)} circles. Circular geometries indicate cans or caps.")
 
         # ── ROW 6: Texture + Specular + Chamfer ───────────────────────────────
-        st.markdown("#### Units 4 & 5: Surface Shading, Texture & Chamfer Matching")
+        st.markdown("#### Stage 3: Surface Shading, Texture & Template Matching")
         r6c1, r6c2, r6c3 = st.columns(3)
 
         specular = pr.get("specular", {})
@@ -717,7 +712,7 @@ with tab2:
             spec_mask = specular["specular_mask"]
             spec_vis[spec_mask > 0] = [0, 255, 255]  # cyan overlay for specular pixels
             show_panel(r6c1, bgr_to_pil(spec_vis),
-                       "16. Specular Highlight Detection (Unit 4)",
+                       "16. Specular Highlight Detection",
                        f"Cyan = specular pixels (V>220, S<50). Specular ratio = {specular.get('specular_ratio',0):.3f}. "
                        f"Glossy = {'True' if specular.get('is_glossy') else 'False'}.")
 
@@ -732,7 +727,7 @@ with tab2:
             ent_norm    = cv2.normalize(entropy_img, None, 0, 255, cv2.NORM_MINMAX).astype(np.uint8)
             ent_color   = cv2.applyColorMap(ent_norm, cv2.COLORMAP_HOT)
             show_panel(r6c2, bgr_to_pil(ent_color),
-                       "17. Local Texture Entropy (Unit 1)",
+                       "17. Local Texture Entropy",
                        f"High entropy indicates textural complexity. GLCM contrast = {texture.get('glcm_contrast',0):.3f}.")
         except Exception:
             show_panel(r6c2, gray_to_pil(gray_for_texture),
@@ -754,7 +749,7 @@ with tab2:
             ax_c.invert_xaxis()
             fig_c.tight_layout()
             with r6c3:
-                st.markdown('<div class="stage-header">18. Chamfer Distance Scores (Unit 5)</div>',
+                st.markdown('<div class="stage-header">18. Chamfer Distance Scores</div>',
                             unsafe_allow_html=True)
                 st.pyplot(fig_c, use_container_width=True)
                 st.caption(f"Best silhouette match: *{best}* (minimum Chamfer distance).")
@@ -762,7 +757,7 @@ with tab2:
 
         # ── Centroidal Profile + Chain Code ───────────────────────────────────
         if contours_data:
-            st.markdown("#### Unit 2: Boundary Descriptors (Centroidal Profile & Chain Code)")
+            st.markdown("#### Stage 4: Boundary Descriptors (Centroidal Profile & Chain Code)")
             rc1, rc2 = st.columns(2)
 
             first = contours_data[0]
@@ -807,12 +802,11 @@ with tab2:
                 plt.close(fig_ch)
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# ═══════════════════════════════════════════════════════════════════════════════
 # TAB 3 — QUANTITATIVE FEATURE INSPECTOR
 # ═══════════════════════════════════════════════════════════════════════════════
 with tab3:
     st.markdown("### Quantitative Feature Inspector")
-    st.caption("Extracted numerical features across all 5 syllabus units for each detected object — exportable as CSV.")
+    st.caption("Extracted numerical feature matrix for each detected object — exportable as CSV.")
 
     if "pipeline_results" not in st.session_state or st.session_state["pipeline_results"] is None:
         st.info("Execute the classification pipeline in *EcoSort Classifier* (Tab 1) first to inspect numerical features.")
@@ -921,8 +915,8 @@ with tab3:
 # TAB 4 — VIVA VOCE & PROJECT REPORT ASSISTANT
 # ═══════════════════════════════════════════════════════════════════════════════
 with tab4:
-    st.markdown("### Viva Voce & Project Report Assistant")
-    st.caption("Academic reference guide for the viva voce examination and syllabus-to-code alignment.")
+    st.markdown("### Theoretical Architecture & Reference Guide")
+    st.caption("Comprehensive technical reference for classical computer vision algorithms and mathematical formulations.")
 
     viva_subtab1, viva_subtab2, viva_subtab3 = st.tabs([
         "System Architecture",
@@ -942,7 +936,7 @@ with tab4:
                                    | BGR Image (H x W x 3, uint8)
                                    v
 +----------------------------------------------------------------------+
-|             UNIT 1 -- IMAGE PROCESSING FOUNDATIONS                   |
+|             STAGE 1 -- IMAGE PROCESSING FOUNDATIONS                  |
 |  * Color space conversions: BGR to Grayscale, BGR to HSV             |
 |  * Noise reduction: GaussianBlur (sigma=auto), MedianBlur            |
 |  * Illumination normalization: CLAHE (Contrast Limited AHE)          |
@@ -955,7 +949,7 @@ with tab4:
                                    | Binary Mask + Gradient Maps
                                    v
 +----------------------------------------------------------------------+
-|             UNIT 2 -- SHAPES AND REGIONS ANALYSIS                    |
+|             STAGE 2 -- SHAPES AND REGIONS ANALYSIS                   |
 |  * Connected Component Labeling (CCL) & Pixel Area Filtering         |
 |  * Euclidean Distance Transform (EDT) & Inscribed Radius Cue         |
 |  * Morphological Skeletonization / Medial Axis Thinning              |
@@ -968,7 +962,7 @@ with tab4:
                                    | Object Features & Regions
                                    v
 +----------------------------------------------------------------------+
-|             UNIT 3 -- HOUGH TRANSFORM ANALYSIS                       |
+|             STAGE 3 -- HOUGH TRANSFORM ANALYSIS                      |
 |  * Probabilistic Hough Line Transform (HoughLinesP)                  |
 |  * Circular Hough Transform (HoughCircles)                           |
 |  * Structural cues: collinear edge sets and circular cross-sections  |
@@ -976,7 +970,7 @@ with tab4:
                                    | Line & Circle Counts
                                    v
 +----------------------------------------------------------------------+
-|             UNIT 4 -- SHADING & SURFACE CUES                         |
+|             STAGE 4 -- SHADING & SURFACE CUES                        |
 |  * Specular Highlight Detection (HSV space: V > 220, S < 50)         |
 |  * Specular Area Ratio: Metallic/Glossy vs. Matte Fibrous Surface    |
 |  * Background Subtraction (MOG2) support for dynamic streams         |
@@ -984,7 +978,7 @@ with tab4:
                                    | Surface Reflectance Metric
                                    v
 +----------------------------------------------------------------------+
-|             UNIT 5 -- CHAMFER TEMPLATE MATCHING                      |
+|             STAGE 5 -- CHAMFER TEMPLATE MATCHING                     |
 |  * Procedural Canonical Silhouette Templates (Bottle, Can, Box, Blob)|
 |  * Chamfer Distance computation via Distance Transform               |
 |  * Global Geometric Fit: best_match = argmin(d_chamfer)              |
@@ -1011,9 +1005,9 @@ with tab4:
 
     # ── Mathematical Formulas ─────────────────────────────────────────────────
     with viva_subtab2:
-        st.markdown("## Mathematical Formulations (21CSE454T Syllabus)")
+        st.markdown("## Mathematical Formulations")
 
-        st.markdown("### Unit 1: Image Processing Foundations")
+        st.markdown("### Image Processing Foundations")
         st.markdown("""
 **Otsu's Threshold** — Maximizes inter-class variance $\\sigma_B^2$:
 
@@ -1037,7 +1031,7 @@ $$\\text{Energy} = \\sum_{i,j}P(i,j)^2$$
 $$\\text{Correlation} = \\sum_{i,j}\\frac{(i-\\mu_i)(j-\\mu_j)\\,P(i,j)}{\\sigma_i\\,\\sigma_j}$$
 """)
 
-        st.markdown("### Unit 2: Shapes and Regions")
+        st.markdown("### Shapes and Regions Analysis")
         st.markdown("""
 **Circularity (Isoperimetric Quotient):**
 $$C = \\frac{4\\pi A}{P^2}  \\quad (C=1 \\text{ for perfect circle, } 0 < C \\leq 1)$$
@@ -1063,7 +1057,7 @@ $$H = -\\sum_{d=0}^{7} p_d \\log_2 p_d$$
 **Centroidal Profile:** $r(\\theta_k) = \\|p(\\theta_k) - c\\|$ for $\\theta_k = k\\cdot\\frac{2\\pi}{64},\\ k=0,\\ldots,63$
 """)
 
-        st.markdown("### Unit 3: Hough Transforms")
+        st.markdown("### Hough Transforms")
         st.markdown("""
 **Hough Line Transform** (Normal form):
 $$\\rho = x\\cos\\theta + y\\sin\\theta$$
@@ -1074,7 +1068,7 @@ $$(x - a)^2 + (y - b)^2 = r^2$$
 Each edge pixel votes for $(a, b, r)$ in the accumulator space.
 """)
 
-        st.markdown("### Units 4 & 5: Shading and Chamfer Matching")
+        st.markdown("### Surface Shading & Chamfer Matching")
         st.markdown("""
 **Specular Ratio:**
 $$R_{\\text{spec}} = \\frac{|\\{(x,y) : V(x,y) > 220 \\wedge S(x,y) < 50\\}|}{|\\text{mask}|}$$
@@ -1087,7 +1081,7 @@ where $DT_T$ is the distance transform of the inverted template $T$, and $I$ is 
 
     # ── Viva Q&A ──────────────────────────────────────────────────────────────
     with viva_subtab3:
-        st.markdown("## Viva Voce Q&A — Course 21CSE454T")
+        st.markdown("## Technical Q&A — Classical Computer Vision")
 
         qa_pairs = [
             ("What is Otsu's thresholding? Why is it better than a fixed threshold?",
@@ -1095,14 +1089,14 @@ where $DT_T$ is the distance transform of the inverted template $T$, and $I$ is 
              "$\\sigma_B^2(t) = \\omega_0\\omega_1(\\mu_0 - \\mu_1)^2$ between foreground and background pixel classes. "
              "Unlike a fixed threshold, it adapts to the actual histogram of the image, making it robust to "
              "lighting changes. In code: `cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)`.",
-             "Unit 1 — Thresholding", "cv_pipeline.py -> threshold_image()"),
+             "Image Thresholding", "cv_pipeline.py -> threshold_image()"),
 
             ("What is CLAHE and why is it needed?",
              "**CLAHE** (Contrast Limited Adaptive Histogram Equalization) applies histogram equalization "
              "to small local tiles (8x8 default) and clips the contrast to prevent over-amplification of noise "
              "(clip limit = 2.0). It normalizes uneven illumination across the image — critical when objects have "
              "shadows or non-uniform lighting. Code: `cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))`.",
-             "Unit 1 — Filtering", "cv_pipeline.py -> preprocess_image()"),
+             "Image Filtering", "cv_pipeline.py -> preprocess_image()"),
 
             ("Explain the Canny edge detector step by step.",
              "Canny has 5 steps: **(1)** Gaussian smoothing to reduce noise. **(2)** Sobel gradient computation "
@@ -1110,7 +1104,7 @@ where $DT_T$ is the distance transform of the inverted template $T$, and $I$ is 
              "**(3)** Non-maximum suppression — retain only local maxima along gradient direction. "
              "**(4)** Double hysteresis thresholding with high/low thresholds. "
              "**(5)** Edge linking. In code: `cv2.Canny(blur, low, high)`.",
-             "Unit 1 — Edge Detection", "cv_pipeline.py -> detect_edges_and_corners()"),
+             "Edge Detection", "cv_pipeline.py -> detect_edges_and_corners()"),
 
             ("What is the Harris Corner Response and when does it fire?",
              "Harris computes the **structure tensor** $M = \\sum[\\nabla I \\nabla I^T]$ in a local window. "
@@ -1118,7 +1112,7 @@ where $DT_T$ is the distance transform of the inverted template $T$, and $I$ is 
              "(intensity changes in all directions), $R$ is large -> corner. When one eigenvalue is large -> edge. "
              "When both are small -> flat region. In EcoSort, corner count > 20 is a strong indicator of "
              "crumpled paper. Code: `cv2.cornerHarris(gray, 2, 3, 0.04)`.",
-             "Unit 1 — Corner Detection", "cv_pipeline.py -> detect_edges_and_corners()"),
+             "Corner Detection", "cv_pipeline.py -> detect_edges_and_corners()"),
 
             ("What is a GLCM? What features does it provide?",
              "A **Gray-Level Co-occurrence Matrix (GLCM)** $P(i,j)$ counts how often intensity $i$ and $j$ "
@@ -1126,7 +1120,7 @@ where $DT_T$ is the distance transform of the inverted template $T$, and $I$ is 
              "**Homogeneity** (proximity to diagonal — uniform regions), **Energy** (textural uniformity/repetition), "
              "**Correlation** (linear dependency). Metallic cans have high homogeneity/energy; cardboard has high contrast. "
              "Code: `skimage.feature.graycomatrix` + `graycoprops`.",
-             "Unit 1 — Texture", "cv_pipeline.py -> compute_texture_features()"),
+             "Texture Analysis", "cv_pipeline.py -> compute_texture_features()"),
 
             ("Difference between Erosion, Dilation, Opening, and Closing?",
              "**Erosion**: shrinks foreground, removes small protrusions (min filter). "
@@ -1135,7 +1129,7 @@ where $DT_T$ is the distance transform of the inverted template $T$, and $I$ is 
              "**Closing** = Dilation then Erosion: fills small background holes in objects. "
              "In EcoSort, opening removes noise, closing ensures the waste mask is solid. "
              "Code: `cv2.morphologyEx(mask, cv2.MORPH_OPEN/CLOSE, kernel)`.",
-             "Unit 1 — Morphology", "cv_pipeline.py -> apply_morphology()"),
+             "Morphological Operations", "cv_pipeline.py -> apply_morphology()"),
 
             ("How does Connected Component Labeling work?",
              "CCL assigns a unique integer label to each group of connected foreground pixels. "
@@ -1143,14 +1137,14 @@ where $DT_T$ is the distance transform of the inverted template $T$, and $I$ is 
              "(union-find); second pass resolves equivalences and relabels. "
              "`cv2.connectedComponentsWithStats` returns label map, bounding boxes, centroids, and pixel areas. "
              "In EcoSort, components below `min_area` are discarded as noise.",
-             "Unit 2 — Connected Components", "cv_pipeline.py -> label_connected_components()"),
+             "Connected Component Analysis", "cv_pipeline.py -> label_connected_components()"),
 
             ("What is the Euclidean Distance Transform used for in EcoSort?",
              "The **EDT** assigns to each foreground pixel the Euclidean distance to the nearest background pixel. "
              "It is used in two ways: (1) for Chamfer matching (sum EDT values at input mask pixels against a template), "
              "and (2) as a visual cue for object thickness/width (maximum EDT value approx radius of the inscribed circle). "
              "Code: `cv2.distanceTransform(mask, cv2.DIST_L2, 5)`.",
-             "Unit 2 — Distance Transform", "cv_pipeline.py -> compute_distance_transform_and_skeleton()"),
+             "Distance Transform", "cv_pipeline.py -> compute_distance_transform_and_skeleton()"),
 
             ("What is Morphological Skeletonization?",
              "Skeletonization (thinning) reduces a binary shape to its **medial axis** — a 1-pixel-wide "
@@ -1158,7 +1152,7 @@ where $DT_T$ is the distance transform of the inverted template $T$, and $I$ is 
              "It is computed by iteratively removing boundary pixels that don't disconnect the shape. "
              "In EcoSort, elongated skeletons indicate bottles or straws; compact skeletons indicate cans. "
              "Code: `skimage.morphology.skeletonize(mask > 0)`.",
-             "Unit 2 — Skeletonization", "cv_pipeline.py -> compute_distance_transform_and_skeleton()"),
+             "Skeletonization", "cv_pipeline.py -> compute_distance_transform_and_skeleton()"),
 
             ("Explain Circularity and Solidity as shape descriptors.",
              "**Circularity** $C = 4\\pi A / P^2$ measures how close a shape is to a perfect circle ($C=1$). "
@@ -1166,7 +1160,7 @@ where $DT_T$ is the distance transform of the inverted template $T$, and $I$ is 
              "**Solidity** $S = A / A_{convex}$ measures the fraction of the convex hull area filled by the shape. "
              "High solidity (approaching 1) means compact/convex (can, box). Low solidity means concave/irregular (organic waste). "
              "These are computed from `cv2.moments()` and `cv2.convexHull()`.",
-             "Unit 2 — Shape Descriptors", "cv_pipeline.py -> extract_contour_features()"),
+             "Shape Descriptors", "cv_pipeline.py -> extract_contour_features()"),
 
             ("What are Hu Moments and why are they invariant?",
              "Hu Moments are 7 nonlinear combinations of **central normalized moments** $\\eta_{pq}$ "
@@ -1175,21 +1169,21 @@ where $DT_T$ is the distance transform of the inverted template $T$, and $I$ is 
              "In code: `cv2.HuMoments(cv2.moments(contour))` then log-transformed as "
              "$\\phi_k = -\\text{sign}(h_k)\\log_{10}|h_k|$. In EcoSort, they help distinguish "
              "bottle profiles from can profiles.",
-             "Unit 2 — Moments", "cv_pipeline.py -> extract_contour_features()"),
+             "Invariant Moments", "cv_pipeline.py -> extract_contour_features()"),
 
             ("What are Fourier Descriptors?",
              "Fourier Descriptors represent the boundary as a complex signal $z_n = x_n + j y_n$ and apply "
              "the DFT: $a_k = \\sum z_n e^{-j2\\pi kn/N}$. The low-frequency coefficients (first 10, skip DC) "
              "capture the overall shape; high-frequency coefficients capture fine details. "
              "They are scale-normalized by dividing by $|a_1|$. High variance in FDs indicates irregular or organic boundaries.",
-             "Unit 2 — Fourier Descriptors", "cv_pipeline.py -> extract_contour_features()"),
+             "Fourier Descriptors", "cv_pipeline.py -> extract_contour_features()"),
 
             ("What is the Freeman Chain Code?",
              "The Freeman Chain Code encodes a boundary as a sequence of **8 directional codes** (0=E, 1=NE, ..., 7=SE) "
              "representing steps between consecutive boundary pixels. The histogram of these codes and its "
              "**Shannon entropy** $H = -\\sum p_d \\log_2 p_d$ characterize boundary regularity. "
              "Low entropy indicates smooth regular boundaries (can/bottle). High entropy indicates irregular boundaries (organic/crumpled paper).",
-             "Unit 2 — Chain Code", "cv_pipeline.py -> extract_contour_features()"),
+             "Chain Code Analysis", "cv_pipeline.py -> extract_contour_features()"),
 
             ("Explain the Hough Line Transform mathematically.",
              "Every edge point $(x,y)$ is transformed to the **parameter space** $(\\rho, \\theta)$ via "
@@ -1197,14 +1191,14 @@ where $DT_T$ is the distance transform of the inverted template $T$, and $I$ is 
              "through it. Lines are detected as peaks in the accumulator array. "
              "`HoughLinesP` (probabilistic) is faster — it randomly samples and verifies candidate lines. "
              "In EcoSort, line count > 4 strongly suggests cardboard/paper.",
-             "Unit 3 — Hough Lines", "cv_pipeline.py -> apply_hough_transforms()"),
+             "Hough Line Transform", "cv_pipeline.py -> apply_hough_transforms()"),
 
             ("Explain the Hough Circle Transform.",
              "For each edge point $(x,y)$, circles of all valid radii are parameterized as "
              "$(a,b) = (x - r\\cos\\phi,\\; y - r\\sin\\phi)$. Peaks in the 3D accumulator $(a,b,r)$ correspond to circles. "
              "`cv2.HoughCircles` uses **gradient direction** to reduce it to a 2D problem (center only, then radius). "
              "In EcoSort, detected circles -> can tops/caps -> strong Metal/Tin Can indicator.",
-             "Unit 3 — Hough Circles", "cv_pipeline.py -> apply_hough_transforms()"),
+             "Hough Circle Transform", "cv_pipeline.py -> apply_hough_transforms()"),
 
             ("How is specular ratio computed and what does it indicate?",
              "In HSV space, specular/metallic highlights appear as pixels with **high Value (V > 220)** and "
@@ -1212,7 +1206,7 @@ where $DT_T$ is the distance transform of the inverted template $T$, and $I$ is 
              "$R_{spec} = |\\{(x,y): V>220 \\wedge S<50\\}| / |\\text{mask}|$. "
              "High specular ratio indicates glossy metallic or plastic surfaces. "
              "Low specular ratio indicates matte surfaces characteristic of paper or organic waste.",
-             "Unit 4 — Shape-from-Shading", "cv_pipeline.py -> analyze_specular_shading()"),
+             "Shape-from-Shading", "cv_pipeline.py -> analyze_specular_shading()"),
 
             ("What is Chamfer Distance and how is it used for template matching?",
              "Chamfer matching compares an input binary mask $I$ against canonical templates $T$ using: "
@@ -1220,15 +1214,15 @@ where $DT_T$ is the distance transform of the inverted template $T$, and $I$ is 
              "inverted template. A small $d$ means input mask pixels land close to template boundary pixels -> closer match. "
              "In EcoSort, 4 templates (bottle, can, box, organic blob) are generated procedurally and the "
              "best match (argmin) is used as a classification feature.",
-             "Unit 5 — Chamfer Matching", "cv_pipeline.py -> chamfer_matching()"),
+             "Chamfer Matching", "cv_pipeline.py -> chamfer_matching()"),
 
             ("Why did you NOT use deep learning for this project?",
-             "The course **21CSE454T** covers classical Computer Vision algorithms — thresholding, morphology, "
+             "This project focuses on classical Computer Vision algorithms — thresholding, morphology, "
              "feature descriptors, Hough transforms, and geometric analysis. Using a pre-trained CNN (YOLO/ResNet) "
-             "would be an opaque black box that cannot be mathematically explained at the viva. "
+             "would be an opaque black box that cannot be mathematically explained. "
              "Classical CV provides full algorithmic transparency: every classification decision traces back to an "
-             "explicit formula and a specific syllabus unit. This project demonstrates mastery of all 5 units.",
-             "Academic Rationale", "classifier.py -> classify_object()"),
+             "explicit mathematical formula and transparent feature extraction pipeline.",
+             "Architectural Rationale", "classifier.py -> classify_object()"),
 
             ("What is the difference between Otsu's and Adaptive Thresholding?",
              "**Otsu's** computes a **single global threshold** from the image histogram by maximizing inter-class variance. "
@@ -1236,7 +1230,7 @@ where $DT_T$ is the distance transform of the inverted template $T$, and $I$ is 
              "**Adaptive Thresholding** computes a **local threshold** for each pixel based on the mean (or Gaussian-weighted mean) "
              "of its neighbourhood block. It handles uneven illumination and shadows significantly better. "
              "In EcoSort, adaptive thresholding is preferred for real-world camera images.",
-             "Unit 1 — Thresholding", "cv_pipeline.py -> threshold_image()"),
+             "Image Thresholding", "cv_pipeline.py -> threshold_image()"),
 
             ("How does the EcoSort classifier assign confidence scores?",
              "Each of 4 scoring functions assigns weighted points based on feature values "
@@ -1252,15 +1246,15 @@ where $DT_T$ is the distance transform of the inverted template $T$, and $I$ is 
              "(3) A trained Support Vector Machine (SVM) or Random Forest on the same classical feature vector. "
              "(4) Calibrated camera with known metric scale for physical dimension estimation. "
              "(5) Servo/pneumatic bin actuator control via serial port triggered by classification output.",
-             "Future Work / Unit 4", "app.py -> MOG2 webcam mode"),
+             "Motion & Tracking", "app.py -> MOG2 webcam mode"),
         ]
 
-        for i, (question, answer, unit, code_ref) in enumerate(qa_pairs, 1):
+        for i, (question, answer, topic, code_ref) in enumerate(qa_pairs, 1):
             with st.expander(f"Q{i}: {question}"):
                 st.markdown(f"**Answer:** {answer}")
                 st.markdown(
                     f'<div class="info-box">'
-                    f'<strong>Syllabus Unit:</strong> <em>{unit}</em>&nbsp;&nbsp;|&nbsp;&nbsp;'
+                    f'<strong>Topic Area:</strong> <em>{topic}</em>&nbsp;&nbsp;|&nbsp;&nbsp;'
                     f'<strong>Code Reference:</strong> <code>{code_ref}</code>'
                     f'</div>',
                     unsafe_allow_html=True
@@ -1298,8 +1292,7 @@ st.markdown("---")
 st.markdown("""
 <div style="text-align:center; color:#64748b; font-size:0.85rem; padding:1rem 0; border-top:1px solid #e2e8f0; margin-top:2rem;">
     <em>EcoSort: Visual Waste Classification Assistant</em> &nbsp;|&nbsp;
-    <strong>Course: 21CSE454T — Computer Vision</strong> &nbsp;|&nbsp;
-    <em>Classical Computer Vision Architecture (Units 1–5)</em>
+    <em>Explainable Classical Computer Vision Architecture</em>
 </div>
 """, unsafe_allow_html=True)
 
