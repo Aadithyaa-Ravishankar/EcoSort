@@ -10,6 +10,10 @@ for waste classification and recycling bin routing.
 Run with: streamlit run app.py
 """
 
+import warnings
+warnings.filterwarnings("ignore", message=".*use_container_width.*")
+warnings.filterwarnings("ignore", category=FutureWarning)
+
 import streamlit as st
 import cv2
 import numpy as np
