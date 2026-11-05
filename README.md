@@ -90,7 +90,7 @@ The dashboard includes 4 dedicated interactive tabs:
 - **Tab 1: 🗑️ EcoSort Classifier:** Real-time classification banner with bounding boxes, bin badges, confidence bars, parameter sliders, and natural-language "Why this classification?" decision cards. Supports Built-in Synthetic Samples, Custom File Uploads, and Live Webcam Capture (`st.camera_input`).
 - **Tab 2: 🔬 Pipeline Visualizer:** A 20-panel visual grid displaying all intermediate image processing outputs from Unit 1 to Unit 5.
 - **Tab 3: 📊 Feature Inspector:** Interactive Pandas DataFrame showing all extracted mathematical features for every detected object, with a one-click **Download CSV** export.
-- **Tab 4: 📖 Viva & Report Guide:** Complete syllabus review featuring LaTeX mathematical formulas, system architecture flowcharts, and 25 technical Viva Voce Q&As.
+- **Tab 4: Reference:** Complete technical review featuring mathematical formulations, system architecture flowcharts, and technical Q&A reference.
 
 ---
 

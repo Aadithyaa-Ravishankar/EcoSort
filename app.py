@@ -319,7 +319,7 @@ tab1, tab2, tab3, tab4 = st.tabs([
     "EcoSort Classifier",
     "Pipeline Visualizer",
     "Feature Inspector",
-    "Viva & Academic Guide",
+    "Reference",
 ])
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -925,7 +925,7 @@ with tab4:
     viva_subtab1, viva_subtab2, viva_subtab3 = st.tabs([
         "System Architecture",
         "Mathematical Formulations",
-        "Viva Voce Q&A Reference",
+        "Technical Q&A Reference",
     ])
 
     # ── Architecture ──────────────────────────────────────────────────────────
@@ -1283,7 +1283,7 @@ where $DT_T$ is the distance transform of the inverted template $T$, and $I$ is 
         try:
             with open("VIVA_GUIDE.md", "r") as f:
                 viva_text = f.read()
-            st.download_button("Download Viva Guide (Markdown)",
+            st.download_button("Download Technical Guide (Markdown)",
                                data=viva_text.encode("utf-8"),
                                file_name="VIVA_GUIDE.md",
                                mime="text/markdown",

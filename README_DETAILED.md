@@ -354,10 +354,10 @@ Presents a Pandas DataFrame of extracted mathematical vectors for every detected
 - Hough Line Count, Hough Circle Count, Specular Ratio ($SR$)
 - One-click **Download CSV** button for empirical dataset logging.
 
-### Tab 4: 📖 Viva & Report Guide
+### Tab 4: Reference
 - Full ASCII System Architecture Diagram.
-- LaTeX formula cheat sheet for segmentation, edge detection, shape metrics, moments, and transforms.
-- Built-in 25-question interactive technical Viva Voce Q&A assistant.
+- LaTeX formula reference for segmentation, edge detection, shape metrics, moments, and transforms.
+- Built-in technical Q&A reference assistant.
 
 ---
 

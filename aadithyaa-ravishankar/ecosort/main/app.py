@@ -12,3 +12,4 @@ if REPO_ROOT not in sys.path:
 root_app = os.path.join(REPO_ROOT, "app.py")
 with open(root_app, "r", encoding="utf-8") as f:
     exec(compile(f.read(), root_app, "exec"), globals())
+
